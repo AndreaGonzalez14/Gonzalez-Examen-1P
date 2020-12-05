@@ -25,7 +25,11 @@ switch (comando) {
 
         break;
     case 'guardar':
-        console.log('guardar')
+        buscar.guardar_datos(yarg.archivo, yarg.pais, yarg.anio).then(salida => {
+            console.log(salida);
+        }).catch(error => {
+            console.log(error);
+        })
         break;
 
     default:

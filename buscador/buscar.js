@@ -70,11 +70,44 @@ const mostrar_datos = (path, cod_country, anio) => {
     return false;
 }
 
+const path1 = require('path');
+//Funcion Guardar datos
+const guardar_datos = (path, cod_country, anio) => {
+    leerDatos(path);
+    fs.mkdirSync('./resultados', { recursive: true });
+    return new Promise((resolve, reject) => {
+        let data = '';
+        if (validar_country(cod_country) == true) {
+            if (mostrar_datos(path, cod_country, anio) == false) {
+                reject(colors.red(`Error vuelva a intentarlo`))
+                return;
+            } else {
+                let datos = mostrar_datos(path, cod_country, anio);
+                data += `Datos: ${datos.datos} \n`
+                data += `País: ${datos.pais} \n`
+                data += `Año: ${datos.anio} \n`
+                data += `Valor: ${datos.valor} \n`
+
+                //Manejo de ficheros
+                fs.writeFile(`./resultados/${cod_country}-${anio}.txt`, data, (err) => {
+                    if (err) reject(err);
+                    resolve(`El archivo ${cod_country}-${anio}.txt ha sido creado exitosamente`);
+                });
+            }
+        } else {
+            reject(colors.red(`Error no se encontró: ${cod_country}`))
+            return;
+        }
+
+    })
+
+}
 
 /* let datos = mostrar_datos('../datos.csv', 'EC2', '2004')
 console.log(datos) */
 
 module.exports = {
     mostrar_datos,
-    validar_country
+    validar_country,
+    guardar_datos
 }
